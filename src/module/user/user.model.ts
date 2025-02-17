@@ -1,6 +1,7 @@
 import { model, Schema } from 'mongoose'
+import { IUser } from './user.interface'
 
-const userSchema = new Schema({
+const userSchema = new Schema<IUser>({
   name: {
     type: String,
     required: true,
@@ -16,14 +17,16 @@ const userSchema = new Schema({
   photo: String,
   role: {
     type: String,
+    enum: ['user', 'admin'],
     required: true,
   },
   userStatus: {
     type: String,
+    enum: ['active', 'inActive'], // <-- use array here
     required: true,
   },
 })
 
-const User = model('User', userSchema)
+const User = model<IUser>('User', userSchema)
 
 export default User
