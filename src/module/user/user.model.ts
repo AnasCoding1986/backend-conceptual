@@ -28,17 +28,21 @@ const userSchema = new Schema<IUser>({
   },
 })
 
+// pre hook
+
 // userSchema.pre('find', function (this, next) {
 //   this.find({ userStatus: { $ne: 'active' } })
 //   next()
 // })
 
-userSchema.post('find', function (docs, next) {
-  docs.foreach((doc: IUser) => {
-    doc.name = doc.name.toUpperCase()
-  })
-  next()
-})
+// post hook
+
+// userSchema.post('find', function (docs, next) {
+//   docs.foreach((doc: IUser) => {
+//     doc.name = doc.name.toUpperCase()
+//   })
+//   next()
+// })
 
 const User = model<IUser>('User', userSchema)
 
