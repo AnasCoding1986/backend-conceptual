@@ -35,7 +35,65 @@ const getUser = async (req: Request, res: Response) => {
   }
 }
 
+const getSingleUser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.id
+    const result = await userServise.getSingleUser(userId)
+    res.json({
+      status: true,
+      message: 'Single user retrived successfully',
+      result,
+    })
+  } catch (error) {
+    res.json({
+      status: false,
+      message: 'something wrong',
+      error,
+    })
+  }
+}
+
+const updateUser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.id
+    const data = req.body
+    const result = await userServise.updateUser(userId, data)
+    res.json({
+      status: true,
+      message: 'User data updated successfully',
+      result,
+    })
+  } catch (error) {
+    res.json({
+      status: false,
+      message: 'something wrong',
+      error,
+    })
+  }
+}
+
+const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.id
+    await userServise.deleteUser(userId)
+    res.json({
+      status: true,
+      message: 'User deleted successfully',
+      result: {},
+    })
+  } catch (error) {
+    res.json({
+      status: false,
+      message: 'something wrong',
+      error,
+    })
+  }
+}
+
 export const userController = {
   createUser,
   getUser,
+  getSingleUser,
+  updateUser,
+  deleteUser,
 }
