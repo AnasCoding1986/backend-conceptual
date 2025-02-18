@@ -6,6 +6,12 @@ const crateUser = async (payload: IUser): Promise<IUser> => {
   return result
 }
 
+const getUser = async () => {
+  const result = await User.find()
+  return result
+}
+
 export const userServise = {
   crateUser,
+  getUser,
 }
