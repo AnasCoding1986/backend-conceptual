@@ -25,6 +25,11 @@ const deleteTour = async (id: string) => {
   const result = await Tour.findByIdAndDelete(id)
   return result
 }
+
+const getNextSchedule = async (id: string) => {
+  const tour = await Tour.findById(id)
+}
+
 export const tourService = {
   createTour,
   getTour,
