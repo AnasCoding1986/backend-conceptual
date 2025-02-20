@@ -3,6 +3,8 @@ import Tour from './tour.model'
 
 const createTour = async (payLoad: IUser) => {
   const result = await Tour.create(payLoad)
+  console.log(result)
+
   return result
 }
 
@@ -28,6 +30,14 @@ const deleteTour = async (id: string) => {
 
 const getNextSchedule = async (id: string) => {
   const tour = await Tour.findById(id)
+  const nextSchedule = tour?.getnearestStartDateAndEndDate()
+
+  console.log(tour, nextSchedule)
+
+  return {
+    tour,
+    nextSchedule,
+  }
 }
 
 export const tourService = {
@@ -36,4 +46,5 @@ export const tourService = {
   getSingleTour,
   updateTour,
   deleteTour,
+  getNextSchedule,
 }

@@ -57,6 +57,25 @@ const getSingleTours = async (req: Request, res: Response) => {
   }
 }
 
+const getNextTourSchedule = async (req: Request, res: Response) => {
+  try {
+    const id = await req.params.id
+    const result = tourService.getNextSchedule(id)
+
+    res.send({
+      success: true,
+      message: 'Next Tour Schedule retrived successfuly',
+      result,
+    })
+  } catch (error) {
+    res.send({
+      success: false,
+      message: 'Something went wrong',
+      error,
+    })
+  }
+}
+
 const updateTours = async (req: Request, res: Response) => {
   try {
     const id = req.params.id
@@ -101,4 +120,5 @@ export const tourController = {
   getSingleTours,
   updateTours,
   deleteTours,
+  getNextTourSchedule,
 }

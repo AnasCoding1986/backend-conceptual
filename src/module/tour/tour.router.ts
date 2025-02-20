@@ -3,6 +3,7 @@ import { tourController } from './tour.controller'
 
 const tourRouter = Router()
 
+tourRouter.get('/schedule/:id', tourController.getNextTourSchedule)
 tourRouter.get('/:id', tourController.getSingleTours)
 tourRouter.get('/', tourController.getTours)
 tourRouter.post('/', tourController.createTour)

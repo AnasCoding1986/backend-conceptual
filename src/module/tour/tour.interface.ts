@@ -7,7 +7,7 @@ export interface ITour {
   price: number
   coverImage: string
   image?: string[]
-  startDate?: string
+  startDates?: Date[]
   location?: string[]
   slug?: string
 }
