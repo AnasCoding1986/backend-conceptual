@@ -13,6 +13,7 @@ const userSchema = new Schema<IUser>({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   photo: String,
   role: {
@@ -23,27 +24,10 @@ const userSchema = new Schema<IUser>({
   },
   userStatus: {
     type: String,
-    enum: ['active', 'inActive'], // <-- use array here
+    enum: ['active', 'inActive'],
     required: true,
   },
 })
 
-// pre hook
-
-// userSchema.pre('find', function (this, next) {
-//   this.find({ userStatus: { $ne: 'active' } })
-//   next()
-// })
-
-// post hook
-
-// userSchema.post('find', function (docs, next) {
-//   docs.foreach((doc: IUser) => {
-//     doc.name = doc.name.toUpperCase()
-//   })
-//   next()
-// })
-
 const User = model<IUser>('User', userSchema)
-
 export default User

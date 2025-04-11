@@ -1,7 +1,11 @@
 import { IUser } from './user.interface'
 import User from './user.model'
 
-const crateUser = async (payload: IUser): Promise<IUser> => {
+const createUser = async (payload: IUser): Promise<IUser> => {
+  const existingUser = await User.findOne({ email: payload.email })
+  if (existingUser) {
+    throw new Error('Email already exists')
+  }
   const result = await User.create(payload)
   return result
 }
@@ -28,8 +32,8 @@ const deleteUser = async (id: string) => {
   return result
 }
 
-export const userServise = {
-  crateUser,
+export const userService = {
+  createUser,
   getUser,
   getSingleUser,
   updateUser,

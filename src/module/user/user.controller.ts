@@ -1,11 +1,11 @@
-import { userServise } from './user.service'
 import sendResponse from '../../utils/sendResponse'
 import { StatusCodes } from 'http-status-codes'
 import catchAsync from '../../utils/catchAsync'
+import { userService } from './user.service'
 
 const createUser = catchAsync(async (req, res) => {
   const payload = req.body
-  const result = await userServise.crateUser(payload)
+  const result = await userService.createUser(payload)
   sendResponse(res, {
     statuscode: StatusCodes.CREATED,
     message: 'User created successfully',
@@ -14,7 +14,7 @@ const createUser = catchAsync(async (req, res) => {
 })
 
 const getUser = catchAsync(async (req, res) => {
-  const result = await userServise.getUser()
+  const result = await userService.getUser()
 
   sendResponse(res, {
     statuscode: StatusCodes.OK,
@@ -25,7 +25,7 @@ const getUser = catchAsync(async (req, res) => {
 
 const getSingleUser = catchAsync(async (req, res) => {
   const userId = req.params.id
-  const result = await userServise.getSingleUser(userId)
+  const result = await userService.getSingleUser(userId)
 
   sendResponse(res, {
     statuscode: StatusCodes.OK,
@@ -37,7 +37,7 @@ const getSingleUser = catchAsync(async (req, res) => {
 const updateUser = catchAsync(async (req, res) => {
   const userId = req.params.id
   const data = req.body
-  const result = await userServise.updateUser(userId, data)
+  const result = await userService.updateUser(userId, data)
 
   sendResponse(res, {
     statuscode: StatusCodes.OK,
@@ -48,7 +48,7 @@ const updateUser = catchAsync(async (req, res) => {
 
 const deleteUser = catchAsync(async (req, res) => {
   const userId = req.params.id
-  await userServise.deleteUser(userId)
+  await userService.deleteUser(userId)
 
   sendResponse(res, {
     statuscode: StatusCodes.OK,
