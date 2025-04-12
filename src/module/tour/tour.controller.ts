@@ -16,7 +16,7 @@ const createTour = catchAsync(async (req: Request, res: Response) => {
 })
 
 const getTours = catchAsync(async (req: Request, res: Response) => {
-  const result = await tourService.getTour()
+  const result = await tourService.getTour(req.query)
 
   sendResponse(res, {
     statuscode: StatusCodes.CREATED,

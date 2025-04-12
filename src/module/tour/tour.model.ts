@@ -5,6 +5,7 @@ const tourSchema = new Schema<ITour, TTourModel, ITourMethods>({
   name: {
     type: String,
     required: true,
+    minlength: 10,
   },
   durationHours: {
     type: Number,
