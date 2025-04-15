@@ -36,15 +36,20 @@ const getTour = async (query: Record<string, unknown>): Promise<ITour[]> => {
   const limit = Number(query.limit) || 10
   const skip = (page - 1) * limit
 
-  let sortStr = ''
+  let sortObj: Record<string, 1 | -1> = {}
   if (query?.sortBy && query?.sortOrder) {
-    sortStr = `${query.sortOrder === 'desc' ? '-' : ''}${query.sortBy}`
+    sortObj = {
+      [query.sortBy as string]: query.sortOrder === 'desc' ? -1 : 1,
+    }
   }
 
   const result = await Tour.find(finalQuery)
+    .select(
+      'name price coverImage averageRating durationHours slug location startDates availableSeats'
+    ) // Only include necessary fields
     .skip(skip)
     .limit(limit)
-    .sort(sortStr || '')
+    .sort(sortObj)
 
   return result
 }
