@@ -37,13 +37,10 @@ const userSchema = new Schema<IUser>({
 })
 
 userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next() // Only hash if it's new or changed
+
   const user = this as IUser
   user.password = await bcrypt.hash(user.password, Number(config.salt))
-  next()
-})
-
-userSchema.post('save', function (doc, next) {
-  doc.password = ''
   next()
 })
 
