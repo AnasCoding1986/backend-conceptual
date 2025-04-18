@@ -2,24 +2,29 @@ import express, { Request, Response, NextFunction } from 'express'
 import userRouter from './module/user/user.router'
 import tourRouter from './module/tour/tour.router'
 import bookingRouter from './module/booking/booking.route'
-import { globalErrorHandler } from './middlewire/globalErrorHandler'
+import authRoute from './module/auth/auth.route'
+import { globalErrorHandler } from './middleware/globalErrorHandler' // ✅ renamed 'middlewire' to 'middleware'
 
 const app = express()
 
+// Middleware
 app.use(express.json())
 
+// Routes
+app.use('/api/auth', authRoute)
 app.use('/api/user', userRouter)
 app.use('/api/tour', tourRouter)
 app.use('/api/booking', bookingRouter)
 
+// Health check
 app.get('/', (req: Request, res: Response) => {
   res.send({
     status: true,
-    message: 'server is running',
+    message: 'Server is running',
   })
 })
 
-// 404 Not Found middleware
+// 404 Route Not Found Handler
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((req: Request, res: Response, _next: NextFunction) => {
   res.status(404).json({
@@ -32,8 +37,7 @@ app.use((req: Request, res: Response, _next: NextFunction) => {
   })
 })
 
-// Global error handler
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+// Global Error Handler
 app.use(globalErrorHandler)
 
 export default app

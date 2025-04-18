@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import mongoose from 'mongoose'
 import { ZodError } from 'zod'
@@ -12,6 +12,7 @@ import { handleValidationError } from '../helpers/handleValidationError'
 // Optional: Custom AppError class
 export class AppError extends Error {
   statusCode: number
+
   constructor(message: string, statusCode = 500) {
     super(message)
     this.statusCode = statusCode
@@ -19,6 +20,7 @@ export class AppError extends Error {
   }
 }
 
+// ✅ No need to explicitly type this as ErrorRequestHandler — just use function with 4 params
 export const globalErrorHandler = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   err: any,
@@ -26,31 +28,28 @@ export const globalErrorHandler = (
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction
-) => {
+): void => {
   // 1. CastError (invalid MongoDB ObjectId)
   if (err instanceof mongoose.Error.CastError) {
-    return handleCastError(err, res)
+    handleCastError(err, res)
+    return
   }
 
   // 2. ValidationError (Mongoose)
   if (err instanceof mongoose.Error.ValidationError) {
-    console.error('ValidationError:', err)
-    return handleValidationError(err, res)
+    handleValidationError(err, res)
+    return
   }
 
   // 3. Duplicate Key Error
   if (err.code && err.code === 11000) {
-    console.error(
-      'Duplicate Key Error:',
-      JSON.stringify(err, Object.getOwnPropertyNames(err), 2)
-    )
-    return handleDuplicateError(err, res)
+    handleDuplicateError(err, res)
+    return
   }
 
   // 4. Zod validation error
   if (err instanceof ZodError) {
-    console.error('ZodError:', err.errors)
-    return res.status(StatusCodes.BAD_REQUEST).json({
+    res.status(StatusCodes.BAD_REQUEST).json({
       success: false,
       name: 'ZodError',
       message: 'Validation Error',
@@ -59,54 +58,60 @@ export const globalErrorHandler = (
         message: e.message,
       })),
     })
+    return
   }
 
   // 5. JWT errors
   if (err instanceof jwt.TokenExpiredError) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
+    res.status(StatusCodes.UNAUTHORIZED).json({
       success: false,
       name: 'TokenExpiredError',
       message: 'JWT token has expired',
       error: err,
     })
+    return
   }
 
   if (err instanceof jwt.JsonWebTokenError) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
+    res.status(StatusCodes.UNAUTHORIZED).json({
       success: false,
       name: 'JsonWebTokenError',
       message: 'Invalid JWT token',
       error: err,
     })
+    return
   }
 
   // 6. Multer file upload error
   if (err instanceof multer.MulterError) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
+    res.status(StatusCodes.BAD_REQUEST).json({
       success: false,
       name: 'MulterError',
       message: err.message,
       error: err,
     })
+    return
   }
 
   // 7. Custom AppError
   if (err instanceof AppError) {
-    return res.status(err.statusCode).json({
+    res.status(err.statusCode).json({
       success: false,
       name: 'AppError',
       message: err.message,
       error: err,
     })
+    return
   }
 
   // 8. Generic error handler
   if (err instanceof Error) {
-    return handleGenericError(err, res)
+    handleGenericError(err, res)
+    return
   }
 
-  // Fallback for unknown errors
-  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+  // 9. Fallback for unknown errors
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     success: false,
     message: 'Something went wrong!',
     error: err,
