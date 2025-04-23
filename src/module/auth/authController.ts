@@ -27,7 +27,20 @@ const login = catchAsync(async (req: Request, res: Response) => {
   })
 })
 
+const forgetPassword = catchAsync(async (req: Request, res: Response) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const result = await AuthService.forgetPassword(req.body)
+
+  sendResponse(res, {
+    status: true,
+    statuscode: StatusCodes.CREATED,
+    message: 'Reset password link sent successfully',
+    data: null,
+  })
+})
+
 export const AuthController = {
   register,
   login,
+  forgetPassword,
 }

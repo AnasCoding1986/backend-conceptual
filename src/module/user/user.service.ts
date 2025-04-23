@@ -6,6 +6,7 @@ const createUser = async (payload: IUser): Promise<IUser> => {
   if (existingUser) {
     throw new Error('Email already exists')
   }
+  payload.role = 'user'
   const result = await User.create(payload)
   return result
 }
