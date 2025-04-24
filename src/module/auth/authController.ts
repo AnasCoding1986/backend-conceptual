@@ -39,8 +39,38 @@ const forgetPassword = catchAsync(async (req: Request, res: Response) => {
   })
 })
 
+const resetPassword = catchAsync(async (req: Request, res: Response) => {
+  const { id, token, password } = req.body
+
+  console.log(
+    'id',
+    id,
+    'token',
+    token,
+    'password',
+    password,
+    'req.body',
+    req.body
+  )
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const result = await AuthService.resetPassword(
+    id as string,
+    token as string,
+    password
+  )
+
+  sendResponse(res, {
+    status: true,
+    statuscode: StatusCodes.CREATED,
+    message: 'Password reset successfully',
+    data: null,
+  })
+})
+
 export const AuthController = {
   register,
   login,
   forgetPassword,
+  resetPassword,
 }

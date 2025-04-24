@@ -1,3 +1,4 @@
+import config from '../../config'
 import sendmail from '../../utils/sendMail'
 import { IUser } from '../user/user.interface'
 import User from '../user/user.model'
@@ -62,10 +63,34 @@ const forgetPassword = async (payload: ILogin) => {
   await sendmail(user?.email, 'Reset Your Password', resentLink)
 }
 
+const resetPassword = async (id: string, token: string, password: string) => {
+  console.log(id, token, password)
+
+  const user = await User.findById(id)
+  if (!user) {
+    throw new Error('User not found')
+  }
+  const userStatus = user?.userStatus
+  if (userStatus === 'inActive') {
+    throw new Error('User is not active')
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+  jwt.verify(token, 'secret', (err: any, decoded: any) => {
+    if (err) {
+      throw new Error('Invalid token')
+    }
+  })
+  password = await bcrypt.hash(password, Number(config.salt))
+  user.password = password
+  const result = await User.findByIdAndUpdate(user?._id, user, { new: true })
+  return result
+}
+
 // 2abcdef12@amail.com
 
 export const AuthService = {
   register,
   login,
   forgetPassword,
+  resetPassword,
 }
